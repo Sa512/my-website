@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>نموذج دخول المشرف</title>
+    <style>
+        body {
+            background-color: #004d00;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding-top: 50px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 250px;
+        }
+        button {
+            padding: 10px 30px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🫡🇸🇦 أهلاً وسهلاً بك</h1>
+    <h2>هل أنت مشرف؟</h2>
+
+    <form action="save_admin.php" method="post">
+        <input type="text" name="work_id" placeholder="رقم العمل" required><br>
+        <input type="text" name="secret_code" placeholder="الرمز السري" required><br>
+        <button type="submit">دخول</button>
+    </form>
+</body>
+</html>
