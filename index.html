@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بوابة الدخول</title>
+
+  <!-- خط ويب -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- مكتبة الجسيمات -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #0b261a;
+      overflow: hidden;
+      color: white;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: #0b261a;
+    }
+
+    .container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .card {
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 30px 25px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 15px #00ff88;
+    }
+
+    h2 {
+      color: #00ff88;
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: #00cc66;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1 1 45%;
+      min-width: 120px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #009944;
+    }
+
+    form {
+      margin-top: 10px;
+      display: none;
+      text-align: right;
+    }
+
+    form.active {
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 10px 0 20px 0;
+      border-radius: 7px;
+      border: none;
+      background-color: #222;
+      color: #eee;
+      font-size: 1rem;
+      direction: ltr;
+    }
+
+    /* رقم الجوال +966 ثابت وجزء قابل للتعبئة */
+    .phone-wrapper {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .phone-prefix {
+      background-color: #0f3300;
+      color: #0f9d58;
+      padding: 10px 14px;
+      border-radius: 7px;
+      user-select: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      width: 80px;
+      text-align: center;
+    }
+
+    .phone-input {
+      flex-grow: 1;
+    }
+
+    .error-message {
+      color: #ff5555;
+      font-size: 0.9rem;
+      margin-top: -15px;
+      margin-bottom: 15px;
+      display: none;
+      text-align: center;
+    }
+
+    .success-message {
+      color: #00ff88;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      .buttons {
+        flex-direction: column;
+      }
+
+      button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container">
+    <div class="card" id="mainCard">
+      <h2>مرحباً بك في موقعنا 🫡🇸🇦</h2>
+      <p>اختر نوع الدخول:</p>
+
+      <div class="buttons" id="roleButtons">
+        <button onclick="selectType('user')">مستخدم</button>
+        <button onclick="selectType('admin')">مشرف</button>
+      </div>
+
+      <!-- ======== للمستخدم ======== -->
+      <div id="userStep" class="hidden">
+        <p>هل لديك حساب بالفعل؟</p>
+        <div class="buttons">
+          <button onclick="showUserLogin()">نعم</button>
+          <button onclick="showUserRegister()">لا</button>
+        </div>
+      </div>
+
+      <!-- تسجيل دخول مستخدم: إدخال ايميل أو جوال -->
+      <form id="userLoginForm">
+        <h2>تسجيل دخول</h2>
+        <input type="text" id="loginInput" placeholder="رقم الجوال أو البريد الإلكتروني" required />
+        <div class="error-message" id="loginInputError">يرجى إدخال بريد إلكتروني صالح أو رقم جوال يبدأ بـ +966</div>
+        <button type="submit">استمرار</button>
+      </form>
+
+      <!-- إدخال رمز التحقق OTP -->
+      <form id="otpForm">
+        <h2>أدخل رمز التحقق (OTP)</h2>
+        <input type="text" id="otpInput" placeholder="رمز التحقق" required maxlength="6" />
+        <div class="error-message" id="otpError">الرجاء إدخال رمز صحيح مكون من 6 أرقام</div>
+        <button type="submit">تحقق</button>
+      </form>
+
+      <!-- تسجيل مستخدم جديد -->
+      <form id="userRegisterForm">
+        <h2>تسجيل مستخدم جديد</h2>
+        <input type="text" placeholder="الاسم الكامل" required />
+        <input type="number" placeholder="العمر" min="10" max="120" required />
+
+        <input type="email" placeholder="البريد الإلكتروني" required />
+
+        <div class="phone-wrapper">
+          <input class="phone-prefix" type="text" value="+966" disabled />
+          <input class="phone-input" type="tel" id="phoneInput" placeholder="5xxxxxxxx" pattern="5[0-9]{8}" required />
+        </div>
+        <div class="error-message" id="phoneError">رقم الجوال غير صحيح. يجب أن يبدأ بـ 5 ويتكون من 9 أرقام.</div>
+
+        <button type="submit">إرسال</button>
+      </form>
+
+      <!-- ======== للمشرف ======== -->
+      <form id="adminForm">
+        <h2>دخول المشرف 🔒</h2>
+        <input type="email" placeholder="البريد الإلكتروني" id="adminEmail" required />
+        <input type="password" placeholder="كلمة المرور" id="adminPass" required />
+        <div class="error-message" id="adminError">تحقق من البريد الإلكتروني وكلمة المرور</div>
+        <button type="button" onclick="validateAdmin()">تسجيل الدخول</button>
+      </form>
+
+      <!-- صفحة الطلبات للمشرف -->
+      <div id="ordersPage" class="hidden">
+        <h2>📋 الطلبات الحالية</h2>
+        <p class="success-message">مرحباً أيها المشرف، هنا ستظهر الطلبات لاحقًا.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // تخفي كل الأقسام التي ليست نشطة
+    function hideAll() {
+      document.getElementById('roleButtons').style.display = 'none';
+      document.getElementById('userStep').classList.add('hidden');
+      document.getElementById('userLoginForm').classList.remove('active');
+      document.getElementById('userLoginForm').style.display = 'none';
+      document.getElementById('otpForm').classList.remove('active');
+      document.getElementById('otpForm').style.display = 'none';
+      document.getElementById('userRegisterForm').classList.remove('active');
+      document.getElementById('userRegisterForm').style.display = 'none';
+      document.getElementById('adminForm').style.display = 'none';
+      document.getElementById('ordersPage').classList.add('hidden');
+
+      // اخفاء كل رسائل الخطأ
+      document.getElementById('loginInputError').style.display = 'none';
+      document.getElementById('otpError').style.display = 'none';
+      document.getElementById('phoneError').style.display = 'none';
+      document.getElementById('adminError').style.display = 'none';
+    }
+
+    // عند اختيار نوع المستخدم
+    function selectType(type) {
+      hideAll();
+      if (type === 'user') {
+        document.getElementById('userStep').classList.remove('hidden');
+      } else {
+        document.getElementById('adminForm').style.display = 'block';
+      }
+    }
+
+    // تظهر أسئلة هل عنده حساب؟
+    function showUserLogin() {
+      hideAll();
+      document.getElementById('userLoginForm').classList.add('active');
+      document.getElementById('userLoginForm').style.display = 'block';
+    }
+
+    function showUserRegister() {
+      hideAll();
+      document.getElementById('userRegisterForm').classList.add('active');
+      document.getElementById('userRegisterForm').style.display = 'block';
+    }
+
+    // تحقق من صحة الايميل أو رقم الجوال
+    function isValidEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function isValidPhone(phone) {
+      // يجب أن يبدأ بـ +9665XXXXXXXX ويكون 13 رمز (مع +)
+      return /^\+9665\d{8}$/.test(phone);
+    }
+
+    // معالجة تسجيل دخول المستخدم - إدخال إيميل أو رقم جوال
+    document.getElementById('userLoginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const input = document.getElementById('loginInput').value.trim();
+
+      // إذا بدأ بـ +966 أو 966 أو 05
+      let phoneNumber = input;
+      if (/^05/.test(input)) {
+        phoneNumber = '+966' + input.slice(1);
+      } else if (/^9665/.test(input)) {
+        phoneNumber = '+' + input;
+      }
+
+      const validEmail = isValidEmail(input);
+      const validPhone = isValidPhone(phoneNumber);
+
+      if (!validEmail && !validPhone) {
+        document.getElementById('loginInputError').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('loginInputError').style.display = 'none';
+
+      // حفظ الرقم للإستخدام في خطوة OTP
+      sessionStorage.setItem('userLoginIdentifier', validEmail ? input : phoneNumber);
+
+      // إظهار نموذج OTP
+      showOTPForm();
+    });
+
+    // إظهار نموذج OTP
+    function showOTPForm() {
+      document.getElementById('userLoginForm').classList.remove('active');
+      document.getElementById('userLoginForm').style.display = 'none';
+
+      const otpForm = document.getElementById('otpForm');
+      otpForm.classList.add('active');
+      otpForm.style.display = 'block';
+
+      document.getElementById('otpInput').value = '';
+      document.getElementById('otpError').style.display = 'none';
+
+      // في الحياة الحقيقية ترسل رمز OTP للمستخدم هنا!
+      console.log("تم إرسال رمز التحقق إلى:", sessionStorage.getItem('userLoginIdentifier'));
+    }
+
+    // التحقق من رمز OTP
+    document.getElementById('otpForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const otpValue = document.getElementById('otpInput').value.trim();
+
+      if (!/^\d{6}$/.test(otpValue)) {
+        document.getElementById('otpError').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('otpError').style.display = 'none';
+
+      alert('تم التحقق من الرمز بنجاح! 🎉');
+      // هنا ممكن تحول المستخدم للصفحة الرئيسية أو خدماته
+      // مثال: window.location.href = "/user-dashboard.html";
+    });
+
+    // التحقق من تسجيل مستخدم جديد
+    document.getElementById('userRegisterForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const phoneInput = document.getElementById('phoneInput').value.trim();
+      const phoneErrorEl = document.getElementById('phoneError');
+
+      if (!/^5\d{8}$/.test(phoneInput)) {
+        phoneErrorEl.style.display = 'block';
+        return;
+      }
+
+      phoneErrorEl.style.display = 'none';
+
+      const fullPhone = '+966' + phoneInput;
+      alert(`تم التسجيل بنجاح!\nرقم الجوال: ${fullPhone}`);
+      // هنا ترسل البيانات للسيرفر أو تخزنها
+    });
+
+    // تحقق من بيانات المشرف
+    function validateAdmin() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass = document.getElementById('adminPass').value.trim();
+      const error = document.getElementById('adminError');
+
+      if (email === "" || pass === "") {
+        error.textContent = "يرجى إدخال البريد الإلكتروني وكلمة المرور";
+        error.style.display = "block";
+        return;
+      }
+
+      // محاكاة تحقق بيانات المشرف
+      if (email === "admin@example.com" && pass === "123456") {
+        error.style.display = "none";
+        showOrdersPage();
+      } else {
+        error.textContent = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+        error.style.display = "block";
+      }
+    }
+
+    // عرض صفحة الطلبات
+    function showOrdersPage() {
+      hideAll();
+      document.getElementById('ordersPage').classList.remove('hidden');
+    }
+
+  </script>
+
+  <script>
+    // particles.js الخلفية
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 70, density: { enable: true, value_area: 800 } },
+        color: { value: "#00ff88" },
+        shape: { type: "circle" },
+        opacity: { value: 0.6, random: false },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 140,
+          color: "#00ff88",
+          opacity: 0.4,
+          width: 1,
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: "none",
+          out_mode: "out",
+        },
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "grab" },
+          onclick: { enable: false },
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 0.5 } },
+        },
+      },
+      retina_detect: true,
+    });
+  </script>
+</body>
+</html>
